@@ -10,3 +10,4 @@ val LIGHTSYMBOL="%"
 val LIGHTMIN = 0
 val LIGHTMAX = 100
 
+const val MQTT_TAG = "AndroidMqttClient"

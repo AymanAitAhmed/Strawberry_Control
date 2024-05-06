@@ -2,6 +2,7 @@ package com.example.fraisecontrol.ui.mainScreen
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
+import com.example.fraisecontrol.network.MqttRepository
 import com.example.fraisecontrol.utils.HUMMAX
 import com.example.fraisecontrol.utils.HUMMIN
 import com.example.fraisecontrol.utils.HUMSYMBOL
@@ -11,10 +12,15 @@ import com.example.fraisecontrol.utils.LIGHTSYMBOL
 import com.example.fraisecontrol.utils.TEMPMAX
 import com.example.fraisecontrol.utils.TEMPMIN
 import com.example.fraisecontrol.utils.TEMPSYMBOL
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import javax.inject.Inject
 
-class MainScreenViewModel : ViewModel() {
+@HiltViewModel
+class MainScreenViewModel @Inject constructor(
+    val mqttRepo: MqttRepository
+) : ViewModel() {
 
     private val _tempCurrentValue = MutableStateFlow(21)
     val tempCurrentValue = _tempCurrentValue.asStateFlow()
@@ -76,24 +82,26 @@ class MainScreenViewModel : ViewModel() {
             }
         }
     }
-    fun onTargetValueIncrease(){
+
+    fun onTargetValueIncrease() {
+        mqttRepo.connect()
         when (_page.value) {
             0 -> {
-                if (_tempTargetValue.value < TEMPMAX){
+                if (_tempTargetValue.value < TEMPMAX) {
                     _tempTargetValue.value += 1
                     _indicatorValue.value = _tempTargetValue.value
                 }
             }
 
             1 -> {
-                if (_humTargetValue.value < HUMMAX){
+                if (_humTargetValue.value < HUMMAX) {
                     _humTargetValue.value += 1
                     _indicatorValue.value = humTargetValue.value
                 }
             }
 
             2 -> {
-                if (_lightTargetValue.value < LIGHTMAX){
+                if (_lightTargetValue.value < LIGHTMAX) {
                     _lightTargetValue.value += 1
                     _indicatorValue.value = lightTargetValue.value
                 }
@@ -101,28 +109,33 @@ class MainScreenViewModel : ViewModel() {
         }
     }
 
-    fun onTargetValueDecrease(){
+    fun onTargetValueDecrease() {
+        mqttRepo.subscribe()
         when (_page.value) {
             0 -> {
-                if (_tempTargetValue.value > TEMPMIN){
+                if (_tempTargetValue.value > TEMPMIN) {
                     _tempTargetValue.value -= 1
                     _indicatorValue.value = _tempTargetValue.value
                 }
             }
 
             1 -> {
-                if (_humTargetValue.value > HUMMIN){
+                if (_humTargetValue.value > HUMMIN) {
                     _humTargetValue.value -= 1
                     _indicatorValue.value = humTargetValue.value
                 }
             }
 
             2 -> {
-                if (_lightTargetValue.value > LIGHTMIN){
+                if (_lightTargetValue.value > LIGHTMIN) {
                     _lightTargetValue.value -= 1
                     _indicatorValue.value = lightTargetValue.value
                 }
             }
         }
+    }
+
+    fun initMqtt(){
+        mqttRepo.connect()
     }
 }

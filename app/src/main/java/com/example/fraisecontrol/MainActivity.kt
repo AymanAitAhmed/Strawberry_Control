@@ -12,7 +12,9 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.fraisecontrol.ui.mainScreen.MainScreen
 import com.example.fraisecontrol.ui.mainScreen.MainScreenViewModel
 import com.example.fraisecontrol.ui.theme.FraiseControlTheme
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
